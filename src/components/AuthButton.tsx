@@ -1,23 +1,24 @@
 import React from 'react';
-import { LogIn, LogOut, User } from 'lucide-react';
+import { LogIn, LogOut, User as UserIcon } from 'lucide-react';
+import { useFirebase } from '../context/FirebaseContext';
 
-// Mock auth for now until Firebase is ready
 export default function AuthButton() {
-  const [user, setUser] = React.useState<any>(null);
+  const { user, loading, login, logout } = useFirebase();
 
-  const login = () => {
-    setUser({ name: 'Traveler', email: 'traveler@example.com' });
-  };
-
-  const logout = () => {
-    setUser(null);
-  };
+  if (loading) {
+    return <div className="w-8 h-8 rounded-full border-2 border-gold border-t-transparent animate-spin"></div>;
+  }
 
   if (user) {
     return (
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 text-beige text-[11px] uppercase tracking-wider">
-          <User size={14} /> {user.name}
+          {user.photoURL ? (
+            <img src={user.photoURL} alt={user.displayName || ''} className="w-6 h-6 rounded-full border border-gold/50" />
+          ) : (
+            <UserIcon size={14} />
+          )}
+          <span className="hidden sm:inline">{user.displayName || 'Traveler'}</span>
         </div>
         <button 
           onClick={logout}
